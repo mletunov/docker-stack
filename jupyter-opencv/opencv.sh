@@ -34,6 +34,7 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
 make
 cd ..
 
+sudo apt-get -y install libpng12-0 libtiff5 libjasper1
 sudo checkinstall -D -y --pkglicense='BSD' --maintainer='opencv' --requires='libpng12-0,libtiff5,libjasper1' make install -C release
 sudo ldconfig
 sudo rm $WORK -rf
