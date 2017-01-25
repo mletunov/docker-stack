@@ -19,4 +19,4 @@ make
 sudo mkdir -p /usr/local/share/doc && mkdir -p /usr/local/share/ffmpeg
 sudo checkinstall -D -y --pkglicense='LGPLv2.1' --maintainer='ffmpeg'
 sudo ldconfig
-sudo rm $WORK -rf
+cp *.deb /tmp && rm $WORK -rf
