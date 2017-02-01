@@ -2,7 +2,7 @@
 
 # dependencies
 sudo apt-get -y install build-essential cmake pkg-config
-sudo apt-get -y install libjpeg8-dev libtiff5-dev libjasper-dev libpng12-dev
+sudo apt-get -y install libtiff5-dev libjasper-dev libpng16-dev
 
 # download and untar zipped opencv archive
 WORK=/tmp/opencv
@@ -11,9 +11,7 @@ wget $1 -O opencv.tar.gz
 tar xvzf opencv.tar.gz && rm opencv.tar.gz
 
 # build and install
-cd *
-mkdir release
-cd release
+cd * && mkdir release && cd release
 cmake -D CMAKE_BUILD_TYPE=RELEASE \
   -D CMAKE_INSTALL_PREFIX=/usr/local \
   -D WITH_QT=OFF \
@@ -25,10 +23,8 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
   -D WITH_FFMPEG=ON \
   ..
 
-make
-cd ..
+make && cd ..
 
-sudo apt-get -y install libpng12-0 libtiff5 libjasper1
-sudo checkinstall -D -y --pkglicense='BSD' --maintainer='opencv' --requires='libpng12-0,libtiff5,libjasper1' make install -C release
+sudo checkinstall -D -y --pkglicense='BSD' --maintainer='opencv' --requires='libpng16-16,libtiff5,libjasper1' make install -C release
 sudo ldconfig
-sudo rm $WORK -rf
+cp *.deb /tmp && rm $WORK -rf

@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:xenial
 LABEL maintainer="Maxim Letunov" \
       ffmpeg="3.2.2" \
       opencv="3.2.0" \
@@ -9,16 +9,18 @@ LABEL maintainer="Maxim Letunov" \
 COPY init.sh /tmp
 RUN cd /tmp && chmod +x init.sh && sync && ./init.sh && rm init.sh
 
+# install python
+COPY python.sh /tmp
+RUN cd /tmp && chmod +x python.sh && sync && ./python.sh && rm python.sh
+
 # install ffmpeg 3.2.2
 ARG ffmpeg=http://www.ffmpeg.org/releases/ffmpeg-3.2.2.tar.gz
 COPY ffmpeg.sh /tmp
 RUN cd /tmp && chmod +x ffmpeg.sh && sync && ./ffmpeg.sh $ffmpeg && rm ffmpeg.sh
 
-# install python
-COPY python.sh /tmp
-RUN cd /tmp && chmod +x python.sh && sync && ./python.sh && rm python.sh
-
 # install opencv 3.2.0
 ARG opencv=https://github.com/opencv/opencv/archive/3.2.0.tar.gz
 COPY opencv.sh /tmp
 RUN cd /tmp && chmod +x opencv.sh && sync && ./opencv.sh $opencv && rm opencv.sh
+
+RUN rm /tmp/*.deb

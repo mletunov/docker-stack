@@ -18,4 +18,4 @@ cd *
 make
 sudo checkinstall -D -y --pkglicense='LGPLv2.1' --maintainer='ffmpeg'
 sudo ldconfig
-sudo rm $WORK -rf
+cp *.deb /tmp && rm $WORK -rf
