@@ -1,0 +1,30 @@
+FROM nvidia/cuda:8.0-cudnn5-runtime-ubuntu16.04
+LABEL maintainer="Maxim Letunov" \
+      ffmpeg="3.2.2" \
+      opencv="3.2.0" \
+      python="3.5" \
+      version="1.0"
+
+# fix cudnn installation
+RUN ln -s libcudnn.so.5 /usr/local/cuda/lib64/libcudnn.so && \
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64"
+
+# prepare ubuntu
+COPY init.sh /tmp
+RUN cd /tmp && chmod +x init.sh && sync && ./init.sh && rm init.sh
+
+# install python
+COPY python.sh /tmp
+RUN cd /tmp && chmod +x python.sh && sync && ./python.sh && rm python.sh
+
+# install ffmpeg 3.2.2
+ARG ffmpeg=http://www.ffmpeg.org/releases/ffmpeg-3.2.2.tar.gz
+COPY ffmpeg.sh /tmp
+RUN cd /tmp && chmod +x ffmpeg.sh && sync && ./ffmpeg.sh $ffmpeg && rm ffmpeg.sh
+
+# install opencv 3.2.0
+ARG opencv=https://github.com/opencv/opencv/archive/3.2.0.tar.gz
+COPY opencv.sh /tmp
+RUN cd /tmp && chmod +x opencv.sh && sync && ./opencv.sh $opencv && rm opencv.sh
+
+RUN rm /tmp/*.deb
