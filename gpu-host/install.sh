@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # install nvidia driver
 # apt-cache search nvidia | grep -P '^nvidia-[0-9]+\s' - nvidia proprietary driver list
 sudo apt-get update && sudo apt-get install -y nvidia-367
