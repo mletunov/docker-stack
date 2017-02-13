@@ -6,8 +6,9 @@ LABEL maintainer="Maxim Letunov" \
       version="1.0"
 
 # fix cudnn installation
-RUN ln -s libcudnn.so.5 /usr/local/cuda/lib64/libcudnn.so && \
-    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64"
+RUN ln -s libcudnn.so.5 /usr/local/cuda/lib64/libcudnn.so && \    
+    echo "LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64" > /etc/environment && \
+    echo "PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /etc/environment
 
 # prepare ubuntu
 COPY init.sh /tmp
