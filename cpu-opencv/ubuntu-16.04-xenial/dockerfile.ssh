@@ -1,0 +1,15 @@
+FROM letunovms/learning:cpu-ubuntu16.04
+LABEL maintainer="Maxim Letunov" \
+      ffmpeg="3.2.2" \
+      opencv="3.2.0" \
+      python="3.5" \
+      version="1.0"
+
+COPY openssh.sh /
+RUN apt-get update && apt-get install -y sudo openssh-server && \
+    chmod +x /openssh.sh && \
+    mkdir /var/run/sshd && \
+    chmod 0755 /var/run/sshd
+
+EXPOSE 22
+CMD ["/openssh.sh", "start"]
