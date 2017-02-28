@@ -2,12 +2,15 @@ FROM jupyter/tensorflow-notebook
 LABEL maintainer="Maxim Letunov" \
       ffmpeg="3.2.2" \
       opencv="3.2.0" \
-      python="3.5" \
-      version="1.0"
+      python="2.7,3.5" \
+      jupyter="python,scala" \
+      version="2.0"
 
 # upgrade python packages in conda
 RUN conda install -y -n root numpy tensorflow matplotlib keras && \
-    conda install -y -n python2 numpy tensorflow matplotlib keras
+    conda install -y -n root -c danim edward && \
+    conda install -y -n python2 numpy tensorflow matplotlib keras && \
+    conda install -y -n python2 -c danim edward
 
 USER root
 
@@ -27,4 +30,11 @@ RUN cd /tmp && chmod +x opencv.sh && sync && ./opencv.sh $opencv && rm opencv.sh
 
 RUN rm /tmp/*.deb
 
+# install java
+COPY java.sh /tmp
+RUN cd /tmp && chmod +x java.sh && sync && ./java.sh && rm java.sh
+
 USER $NB_USER
+
+# install scala kernel to jupyter
+RUN curl -L -o jupyter-scala https://git.io/vrHhi && chmod +x jupyter-scala && ./jupyter-scala && rm -f jupyter-scala
