@@ -1,4 +1,4 @@
-FROM letunovms/learning:jupyter-cpu-debian8
+FROM letunovms/learning:jupyter-debian8
 LABEL maintainer="Maxim Letunov" \
       ffmpeg="3.2.4" \
       opencv="3.2.0" \
