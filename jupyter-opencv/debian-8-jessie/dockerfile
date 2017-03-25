@@ -1,40 +1,32 @@
 FROM jupyter/tensorflow-notebook
 LABEL maintainer="Maxim Letunov" \
-      ffmpeg="3.2.2" \
+      ffmpeg="3.2.4" \
       opencv="3.2.0" \
-      python="2.7,3.5" \
-      jupyter="python,scala" \
-      version="2.0"
-
-# upgrade python packages in conda
-RUN conda install -y -n root numpy tensorflow matplotlib keras && \
-    conda install -y -n root -c danim edward && \
-    conda install -y -n python2 numpy tensorflow matplotlib keras && \
-    conda install -y -n python2 -c danim edward
+      jupyter="python 2.7, python 3.5, scala" \
+      version="3.0"
 
 USER root
 
-# prepare debian
-COPY init.sh /tmp
-RUN cd /tmp && chmod +x init.sh && sync && ./init.sh && rm init.sh
-
-# install ffmpeg 3.2.2
-ARG ffmpeg=http://www.ffmpeg.org/releases/ffmpeg-3.2.2.tar.gz
-COPY ffmpeg.sh /tmp
-RUN cd /tmp && chmod +x ffmpeg.sh && sync && ./ffmpeg.sh $ffmpeg && rm ffmpeg.sh
-
-# install opencv 3.2.0
-ARG opencv=https://github.com/opencv/opencv/archive/3.2.0.tar.gz
-COPY opencv.sh /tmp
-RUN cd /tmp && chmod +x opencv.sh && sync && ./opencv.sh $opencv && rm opencv.sh
-
-RUN rm /tmp/*.deb
+COPY ffmpeg_3.2.4-1_amd64.deb opencv_3.2.0-1_amd64.deb /tmp/
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils && apt-get -y upgrade \
+    && (dpkg -i /tmp/ffmpeg_3.2.4-1_amd64.deb || (apt-get install -fy && dpkg -i /tmp/ffmpeg_3.2.4-1_amd64.deb)) \
+    && (dpkg -i /tmp/opencv_3.2.0-1_amd64.deb || (apt-get install -fy && dpkg -i /tmp/opencv_3.2.0-1_amd64.deb)) \
+    && ldconfig \
+    && rm /tmp/*.deb \
+    && rm -rf /var/lib/apt/lists/*
 
 # install java
+ENV LANG=C.UTF-8 JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
 COPY java.sh /tmp
-RUN cd /tmp && chmod +x java.sh && sync && ./java.sh && rm java.sh
+RUN chmod +x /tmp/java.sh && sync && /tmp/java.sh && rm /tmp/java.sh
 
 USER $NB_USER
 
-# install scala kernel to jupyter
-RUN curl -L -o jupyter-scala https://git.io/vrHhi && chmod +x jupyter-scala && ./jupyter-scala && rm -f jupyter-scala
+# install scala kernel to jupyter and packages to python
+RUN wget -O coursier https://git.io/vgvpD && chmod +x coursier && sync \
+    && wget -qO- https://git.io/vrHhi | sed 's/coursier/.\/coursier/' | sh \
+    && rm coursier \
+    && conda install -y -n root numpy tensorflow matplotlib keras \
+    && conda install -y -n root -c danim edward \
+    && conda install -y -n python2 numpy tensorflow matplotlib keras \
+    && conda install -y -n python2 -c danim edward
