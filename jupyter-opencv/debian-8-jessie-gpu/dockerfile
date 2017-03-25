@@ -1,0 +1,19 @@
+FROM letunovms/learning:jupyter-cpu-debian8
+LABEL maintainer="Maxim Letunov" \
+      ffmpeg="3.2.4" \
+      opencv="3.2.0" \
+      jupyter="python 2.7, python 3.5, scala" \
+      version="3.0"
+
+USER root
+
+# install cuda and cudnn
+ENV CUDA_VERSION=8.0.61 CUDA_PKG_VERSION=8-0 CUDNN_VERSION=5.1.10 PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+COPY cuda.sh /tmp
+RUN chmod +x /tmp/cuda.sh && sync && /tmp/cuda.sh && rm /tmp/cuda.sh
+
+USER $NB_USER
+
+# install packages to python cores
+RUN conda install -y -n root -c jjh_cio_testing tensorflow-gpu \
+    && conda install -y -n python2 -c jjh_cio_testing tensorflow-gpu
