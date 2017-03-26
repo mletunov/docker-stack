@@ -12,8 +12,11 @@ ENV CUDA_VERSION=8.0.61 CUDA_PKG_VERSION=8-0 CUDNN_VERSION=5.1.10 PATH=/usr/loca
 COPY cuda.sh /tmp
 RUN chmod +x /tmp/cuda.sh && sync && /tmp/cuda.sh && rm /tmp/cuda.sh
 
+LABEL com.nvidia.volumes.needed="nvidia_driver"
+LABEL com.nvidia.cuda.version="${CUDA_VERSION}"
+
 USER $NB_USER
 
 # install packages to python cores
-RUN conda install -y -n root -c jjh_cio_testing tensorflow-gpu \
-    && conda install -y -n python2 -c jjh_cio_testing tensorflow-gpu
+RUN /opt/conda/bin/python3 -m pip install tensorflow-gpu \
+    && /opt/conda/envs/python2/bin/python -m pip install tensorflow-gpu
