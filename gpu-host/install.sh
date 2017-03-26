@@ -2,7 +2,7 @@
 
 # install nvidia driver
 # apt-cache search nvidia | grep -P '^nvidia-[0-9]+\s' - nvidia proprietary driver list
-sudo apt-get update && sudo apt-get install -y nvidia-367
+sudo apt-get update && sudo apt-get install -y nvidia-375
 sudo systemctl enable multi-user.target
 sudo systemctl set-default multi-user.target
 # sudo apt install nvidia-current - maybe works
@@ -17,7 +17,7 @@ sudo curl -fsSL https://get.docker.com/ | sh
 
 # install nvidia docker plugin to use GPU into containers
 # nvidia-docker_1.0.0
-wget https://github.com/NVIDIA/nvidia-docker/releases/download/v1.0.0/nvidia-docker_1.0.0-1_amd64.deb -O nvidia-docker.deb && \
+wget -O nvidia-docker.deb https://github.com/NVIDIA/nvidia-docker/releases/download/v1.0.1/nvidia-docker_1.0.1-1_amd64.deb && \
 sudo apt-get install -y ./nvidia-docker.deb && rm nvidia-docker.deb
 
 # nvidia-smi - all information about GPU and installed driver
