@@ -1,0 +1,12 @@
+FROM jupyterhub/jupyterhub
+LABEL maintainer="Maxim Letunov" \
+      authenticator="github" \
+	  spawner="docker" \
+      version="1.0"
+
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils \
+    && apt-get install -y --no-install-recommends libltdl7 \
+	&& rm -rf /var/lib/apt/lists/*
+	
+RUN pip install oauthenticator \
+    && pip install dockerspawner
