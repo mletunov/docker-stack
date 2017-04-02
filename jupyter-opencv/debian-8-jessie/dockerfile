@@ -1,4 +1,4 @@
-FROM jupyter/scipy-notebook
+FROM jupyter/minimal-notebook
 LABEL maintainer="Maxim Letunov" \
       ffmpeg="3.2.4" \
       opencv="3.2.0" \
@@ -22,11 +22,18 @@ RUN chmod +x /tmp/java.sh && sync && /tmp/java.sh && rm /tmp/java.sh
 
 USER $NB_USER
 
-# install scala kernel to jupyter and packages to python
+# install kernels
 RUN wget -O coursier https://git.io/vgvpD && chmod +x coursier && sync \
     && wget -qO- https://git.io/vrHhi | sed 's/coursier/.\/coursier/' | sh \
     && rm coursier \
-    && conda install -y -n root numpy tensorflow matplotlib keras \
-    && conda install -y -n root -c danim edward \
-    && conda install -y -n python2 numpy tensorflow matplotlib keras \
-    && conda install -y -n python2 -c danim edward
+    && conda config --add channels r \
+    && conda install --quiet --yes \
+    'r-base=3.3.2' \
+    'r-irkernel=0.7*' \
+    'r-plyr=1.8*' \
+    && conda clean -tipy
+
+# install python3 kernel packages
+RUN ln -s $CONDA_DIR/bin/pip $CONDA_DIR/bin/pip3 \
+    && pip3 install --upgrade pip \
+    && pip3 install numpy tensorflow matplotlib keras edward

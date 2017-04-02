@@ -17,6 +17,5 @@ LABEL com.nvidia.cuda.version="${CUDA_VERSION}"
 
 USER $NB_USER
 
-# install packages to python cores
-RUN /opt/conda/bin/python3 -m pip install tensorflow-gpu \
-    && /opt/conda/envs/python2/bin/python -m pip install tensorflow-gpu
+# install tensorflow with gpu support
+RUN pip3 install tensorflow-gpu
