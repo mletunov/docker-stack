@@ -14,6 +14,7 @@ mkdir -p $WORK && cd $WORK \
 
 # build and install
 mkdir release && cd release \
+&& /opt/conda/bin/pip install numpy \
 && cmake -D CMAKE_BUILD_TYPE=RELEASE \
     -D CMAKE_INSTALL_PREFIX=/usr/local \
     -D WITH_QT=OFF \
