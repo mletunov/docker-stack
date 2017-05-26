@@ -1,6 +1,6 @@
 FROM jupyterhub/jupyterhub
 LABEL maintainer="Maxim Letunov" \
-      authenticator="github" \
+      authenticator="github, ldap" \
 	  spawner="docker" \
       version="1.0"
 
