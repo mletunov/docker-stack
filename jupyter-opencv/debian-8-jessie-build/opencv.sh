@@ -3,6 +3,7 @@
 # dependencies
 apt-get update && apt-get -y install wget build-essential cmake \
     pkg-config libtiff5-dev libjasper-dev libpng12-dev
+&& rm -rf /var/lib/apt/lists/*
 
 # download and untar opencv archive
 WORK=/tmp/opencv
