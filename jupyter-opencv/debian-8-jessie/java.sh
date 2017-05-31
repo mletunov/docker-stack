@@ -3,7 +3,7 @@
 # install JRE 8
 echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list
 
-JAVA_DEBIAN_VERSION="8u121-b13-1~bpo8+1"
+JAVA_DEBIAN_VERSION="8u131-b11-1~bpo8+1"
 CA_CERTIFICATES_JAVA_VERSION="20161107~bpo8+1"
 
 apt-get update && apt-get install -y \
