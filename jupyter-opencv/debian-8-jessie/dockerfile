@@ -9,7 +9,7 @@ USER root
 
 COPY ffmpeg_3.2.4-1_amd64.deb opencv_3.2.0-1_amd64.deb /tmp/
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils && apt-get -y upgrade \
-    && apt-get install -y --no-install-recommends nodejs \
+    && apt-get install -y --no-install-recommends curl nodejs \
     && (dpkg -i /tmp/ffmpeg_3.2.4-1_amd64.deb || (apt-get install -fy && dpkg -i /tmp/ffmpeg_3.2.4-1_amd64.deb)) \
     && (dpkg -i /tmp/opencv_3.2.0-1_amd64.deb || (apt-get install -fy && dpkg -i /tmp/opencv_3.2.0-1_amd64.deb)) \
     && ldconfig \
@@ -25,8 +25,9 @@ USER $NB_USER
 
 # install kernels
 RUN wget -O coursier https://git.io/vgvpD && chmod +x coursier && sync \
-    && wget -qO- https://git.io/vrHhi | sed 's/coursier/.\/coursier/' | sh \
-    && rm coursier \
+	&& wget -O scala.sh https://git.io/vrHhi && chmod +x scala.sh && sync \
+	&& ./scala.sh \
+    && rm coursier && rm scala.sh \
     && conda install nodejs \
     && conda config --add channels r \
     && conda install --quiet --yes \
