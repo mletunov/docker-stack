@@ -1,0 +1,17 @@
+Insert text below instead of License Key:
+
+Description=JIRA: Commercial,
+CreationDate=2013-12-15,
+jira.LicenseEdition=ENTERPRISE,
+Evaluation=false,
+jira.LicenseTypeName=COMMERCIAL,
+jira.active=true,
+licenseVersion=2,
+MaintenanceExpiryDate=2099-12-31,
+Organisation=joiandjoin,
+SEN= SEN-L3925024,
+ServerID=B3KJ-N51B-1JEI-RI7V,
+jira.NumberOfUsers=-1,
+LicenseID=LID-L3925024,
+LicenseExpiryDate=2099-12-31,
+PurchaseDate=2013-12-15
