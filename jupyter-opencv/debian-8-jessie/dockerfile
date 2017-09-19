@@ -44,4 +44,4 @@ RUN wget -O coursier https://git.io/vgvpD && chmod +x coursier && sync \
 # install python3 kernel packages
 RUN ln -s $CONDA_DIR/bin/pip $CONDA_DIR/bin/pip3 \
     && pip3 install --upgrade pip \
-    && pip3 install numpy pillow pandas tensorflow matplotlib keras edward
+    && pip3 install numpy pillow pandas sklearn tensorflow jupyter-tensorboard matplotlib keras edward
