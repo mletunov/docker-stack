@@ -1,8 +1,11 @@
 #!/bin/bash
 
+
 # dependencies
 apt-get -y install wget build-essential cmake checkinstall \
     pkg-config libtiff5-dev libjasper-dev libpng12-dev
+
+pip install numpy
 
 # download and untar opencv archive
 WORK=/tmp/opencv
@@ -14,11 +17,14 @@ mkdir -p $WORK && cd $WORK \
 
 # build and install
 mkdir release && cd release \
-&& /opt/conda/bin/pip install numpy \
 && cmake -D CMAKE_BUILD_TYPE=RELEASE \
     -D CMAKE_INSTALL_PREFIX=/usr/local \
     -D WITH_QT=OFF \
     -D WITH_GTK=OFF \
+    -D INSTALL_PYTHON_EXAMPLES=OFF \
+    -D BUILD_EXAMPLES=OFF \
+    -D BUILD_PERF_TESTS=OFF \
+    -D BUILD_TESTS=OFF \
     -D PYTHON3_EXECUTABLE=/opt/conda/bin/python3 \
     -D PYTHON3_PACKAGES_PATH=/opt/conda/lib/python3.6/site-packages \
     -D PYTHON3_INCLUDE_DIR=/opt/conda/include/python3.6m \

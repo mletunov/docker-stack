@@ -3,12 +3,12 @@ FROM jupyter/minimal-notebook as builder
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils && apt-get -y upgrade
 
-# install ffmpeg 3.2.4
+# build ffmpeg 3.2.4
 ARG ffmpeg=http://www.ffmpeg.org/releases/ffmpeg-3.2.4.tar.xz
 COPY ffmpeg.sh /tmp
 RUN chmod +x /tmp/ffmpeg.sh && sync && /tmp/ffmpeg.sh $ffmpeg && rm /tmp/ffmpeg.sh
 
-# install opencv 3.2.0
+# build opencv 3.2.0
 ARG opencv=https://github.com/opencv/opencv/archive/3.2.0.tar.gz
 COPY opencv.sh /tmp
 RUN chmod +x /tmp/opencv.sh && sync && /tmp/opencv.sh $opencv && rm /tmp/opencv.sh
