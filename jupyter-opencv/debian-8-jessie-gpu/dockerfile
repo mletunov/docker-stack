@@ -22,8 +22,10 @@ FROM jupyter/minimal-notebook
 LABEL maintainer="Maxim Letunov" \
       ffmpeg="3.2.4" \
       opencv="3.2.0" \
-      jupyter="python 3.6" \
-      version="4.0"
+      python="3.6" \
+      jupyter="Python, Scala, R, NodeJS" \
+      cuda="8.0" \
+      cudnn="5.1"
 
 USER root
 # install cuda and cudnn
