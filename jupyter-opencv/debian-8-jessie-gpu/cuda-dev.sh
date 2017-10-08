@@ -31,5 +31,5 @@ export LIBRARY_PATH=/usr/local/cuda/lib64/stubs:${LIBRARY_PATH}
 
 echo "deb http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
 apt-get update && apt-get install -y --no-install-recommends \
-        libcudnn5=$CUDNN_VERSION-1+cuda8.0 \
-        libcudnn5-dev=$CUDNN_VERSION-1+cuda8.0
+        libcudnn6=$CUDNN_VERSION-1+cuda8.0 \
+        libcudnn6-dev=$CUDNN_VERSION-1+cuda8.0

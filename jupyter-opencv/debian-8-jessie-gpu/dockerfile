@@ -3,7 +3,7 @@ FROM jupyter/minimal-notebook as builder
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils && apt-get -y upgrade
 
-ENV CUDA_PKG_VERSION=8-0 CUDNN_VERSION=5.1.10
+ENV CUDA_PKG_VERSION=8-0 CUDNN_VERSION=6.0.21
 COPY cuda-dev.sh /tmp
 RUN chmod +x /tmp/cuda-dev.sh && sync && /tmp/cuda-dev.sh && rm /tmp/cuda-dev.sh
 
@@ -25,16 +25,17 @@ LABEL maintainer="Maxim Letunov" \
       python="3.6" \
       jupyter="Python, Scala, R, NodeJS" \
       cuda="8.0" \
-      cudnn="5.1"
+      cudnn="6.0"
 
 USER root
 # install cuda and cudnn
-ENV CUDA_VERSION=8.0.61 CUDA_PKG_VERSION=8-0 CUDNN_VERSION=5.1.10
+ENV CUDA_VERSION=8.0.61 CUDA_PKG_VERSION=8-0 CUDNN_VERSION=6.0.21
 COPY cuda.sh /tmp
 RUN chmod +x /tmp/cuda.sh && sync && /tmp/cuda.sh && rm /tmp/cuda.sh
 
-LABEL com.nvidia.volumes.needed="nvidia_driver"
-LABEL com.nvidia.cuda.version="${CUDA_VERSION}"
+LABEL com.nvidia.volumes.needed="nvidia_driver" \
+      com.nvidia.cuda.version="${CUDA_VERSION}" \
+      com.nvidia.cudnn.version="${CUDNN_VERSION}"
 
 COPY --from=builder /tmp/*.deb /tmp/
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils && apt-get -y upgrade \
