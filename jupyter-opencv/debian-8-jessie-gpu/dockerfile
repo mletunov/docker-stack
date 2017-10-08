@@ -1,22 +1,76 @@
-FROM letunovms/learning:jupyter-debian8
+FROM jupyter/minimal-notebook as builder
+
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils && apt-get -y upgrade
+
+ENV CUDA_PKG_VERSION=8-0 CUDNN_VERSION=5.1.10
+COPY cuda-dev.sh /tmp
+RUN chmod +x /tmp/cuda-dev.sh && sync && /tmp/cuda-dev.sh && rm /tmp/cuda-dev.sh
+
+# build ffmpeg 3.2.4
+ARG ffmpeg=http://www.ffmpeg.org/releases/ffmpeg-3.2.4.tar.xz
+COPY ffmpeg.sh /tmp
+RUN chmod +x /tmp/ffmpeg.sh && sync && /tmp/ffmpeg.sh $ffmpeg && rm /tmp/ffmpeg.sh
+
+# build opencv 3.2.0
+ARG opencv=https://github.com/opencv/opencv/archive/3.2.0.tar.gz
+COPY opencv.sh /tmp
+RUN chmod +x /tmp/opencv.sh && sync && /tmp/opencv.sh $opencv && rm /tmp/opencv.sh
+
+
+FROM jupyter/minimal-notebook
 LABEL maintainer="Maxim Letunov" \
       ffmpeg="3.2.4" \
       opencv="3.2.0" \
-      jupyter="python 2.7, python 3.5, scala" \
-      version="3.0"
+      jupyter="python 3.6" \
+      version="4.0"
 
 USER root
-
 # install cuda and cudnn
-ENV CUDA_VERSION=8.0.61 CUDA_PKG_VERSION=8-0 CUDNN_VERSION=5.1.10 PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+ENV CUDA_VERSION=8.0.61 CUDA_PKG_VERSION=8-0 CUDNN_VERSION=5.1.10
 COPY cuda.sh /tmp
 RUN chmod +x /tmp/cuda.sh && sync && /tmp/cuda.sh && rm /tmp/cuda.sh
 
 LABEL com.nvidia.volumes.needed="nvidia_driver"
 LABEL com.nvidia.cuda.version="${CUDA_VERSION}"
 
-USER $NB_USER
+COPY --from=builder /tmp/*.deb /tmp/
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils && apt-get -y upgrade \
+    && apt-get install -y --no-install-recommends curl nodejs \
+    && (dpkg -i /tmp/ffmpeg_3.2.4-1_amd64.deb || (apt-get install -fy && dpkg -i /tmp/ffmpeg_3.2.4-1_amd64.deb)) \
+    && (dpkg -i /tmp/opencv_3.2.0-1_amd64.deb || (apt-get install -fy && dpkg -i /tmp/opencv_3.2.0-1_amd64.deb)) \
+    && ldconfig \
+    && rm /tmp/*.deb \
+    && rm -rf /var/lib/apt/lists/*
 
-# install tensorflow with gpu support
-RUN pip3 install tensorflow-gpu \
-    && pip3 install --force-reinstall jupyter-tensorboard
+# install java
+ENV LANG=C.UTF-8 JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
+COPY java.sh /tmp
+RUN chmod +x /tmp/java.sh && sync && /tmp/java.sh && rm /tmp/java.sh
+
+USER $NB_USER
+WORKDIR work
+
+# install extensions
+RUN conda install -c damianavila82 rise \
+    && jupyter-nbextension install rise --py --sys-prefix \
+    && jupyter-nbextension enable rise --py --sys-prefix
+
+# install kernels
+RUN wget -O coursier https://git.io/vgvpD && chmod +x coursier && sync \
+    && wget -O scala.sh https://git.io/vrHhi && chmod +x scala.sh && sync \
+    && ./scala.sh \
+    && rm coursier && rm scala.sh \
+    && conda install nodejs \
+    && conda config --add channels r \
+    && conda install --quiet --yes \
+    'r-base=3.3.2' \
+    'r-irkernel=0.7*' \
+    'r-plyr=1.8*' \
+    && conda clean -tipy
+
+# install python3 kernel packages
+RUN ln -s $CONDA_DIR/bin/pip $CONDA_DIR/bin/pip3 \
+    && pip3 install --upgrade pip \
+    && pip3 install numpy pillow pandas sklearn tensorflow tensorflow-gpu \
+        jupyter-tensorboard matplotlib keras edward
