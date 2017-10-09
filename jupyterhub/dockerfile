@@ -1,13 +1,13 @@
-FROM jupyterhub/jupyterhub
+FROM jupyterhub/jupyterhub:0.7.2
 LABEL maintainer="Maxim Letunov" \
       authenticator="github, ldap" \
-	  spawner="docker" \
+      spawner="docker" \
       version="1.0"
 
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils \
     && apt-get install -y --no-install-recommends libltdl7 \
-	&& rm -rf /var/lib/apt/lists/*
-	
+    && rm -rf /var/lib/apt/lists/*
+
 RUN pip install oauthenticator \
-    && pip install dockerspawner \
+    && pip install dockerspawner==0.7.0 \
     && pip install jupyterhub-ldapauthenticator
