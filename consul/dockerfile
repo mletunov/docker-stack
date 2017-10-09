@@ -1,0 +1,14 @@
+FROM consul
+
+RUN apk update && apk add bash \
+    && rm /var/cache/apk/*
+
+ADD consul.json /consul/config/consul.json
+ADD consul.sh /usr/local/bin/consul.sh
+
+RUN mv /usr/local/bin/docker-entrypoint.sh /usr/local/bin/temp.sh \
+    && mv /usr/local/bin/consul.sh /usr/local/bin/docker-entrypoint.sh \
+    && mv /usr/local/bin/temp.sh /usr/local/bin/consul.sh \
+    && chmod +x /usr/local/bin/docker-entrypoint.sh
+
+CMD []

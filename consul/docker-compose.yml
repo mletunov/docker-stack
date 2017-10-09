@@ -1,0 +1,30 @@
+version: "3"
+services:
+  consul:
+    image: letunovms/consul
+    environment:
+      ENCRYPT: "9uD2l5Gn29wfqxvoL0aOAA=="
+    deploy:
+      replicas: 4
+      placement:
+        constraints:
+          - node.role == manager
+    ports:
+      - "8500:8500"
+    networks:
+      - consulnet
+
+  visualizer:
+    image: dockersamples/visualizer
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.role == manager
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    ports:
+      - "8080:8080"
+
+networks:
+  consulnet:
