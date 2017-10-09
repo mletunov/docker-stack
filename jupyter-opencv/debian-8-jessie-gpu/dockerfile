@@ -29,7 +29,7 @@ LABEL maintainer="Maxim Letunov" \
 
 USER root
 # install cuda and cudnn
-ENV CUDA_VERSION=8.0.61 CUDA_PKG_VERSION=8-0 CUDNN_VERSION=6.0.21
+ENV CUDA_VERSION=8.0.61 CUDA_PKG_VERSION=8-0 CUDNN_VERSION=6.0.21 PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64
 COPY cuda.sh /tmp
 RUN chmod +x /tmp/cuda.sh && sync && /tmp/cuda.sh && rm /tmp/cuda.sh
 
